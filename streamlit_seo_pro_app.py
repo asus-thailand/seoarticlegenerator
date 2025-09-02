@@ -1,4 +1,4 @@
-# streamlit_final_seo_app.py
+# streamlit_final_boss_app.py
 
 import streamlit as st
 import google.generativeai as genai
@@ -6,7 +6,7 @@ import google.generativeai as genai
 # ==============================================================================
 # --- ส่วนตั้งค่า API Key และหน้าเว็บ ---
 # ==============================================================================
-st.set_page_config(page_title="Final SEO Checklist Writer", page_icon="🏆", layout="wide")
+st.set_page_config(page_title="Final Boss SEO Writer", page_icon="👑", layout="wide")
 
 # จัดการ API Key
 try:
@@ -21,101 +21,123 @@ except (KeyError, FileNotFoundError):
 # ==============================================================================
 # --- หน้าตาของแอปพลิเคชัน ---
 # ==============================================================================
-st.title("🏆 Final SEO Checklist Writer")
-st.markdown("เครื่องมือสร้างสรรค์เนื้อหาพร้อม SEO Checklist ฉบับสมบูรณ์แบบ All-in-One")
+st.title("👑 Final Boss: SEO Publishing Kit Generator")
+st.markdown("เครื่องมือสร้าง 'ชุดข้อมูลสำหรับเผยแพร่' ที่สมบูรณ์แบบสำหรับ Yoast SEO")
 
-# --- ฟอร์มสำหรับรับข้อมูลจากผู้ใช้ ---
-with st.form("final_form"):
-    st.header("1. กำหนดข้อมูลพื้นฐาน")
-    topic_input = st.text_input("หัวข้อบทความ (Topic)", placeholder="เช่น เปรียบเทียบเทคนิคการปลูกผม FUE VS FUT")
-    keyphrase_input = st.text_input("คีย์เวิร์ดหลัก (Focus Keyphrase)", placeholder="เช่น ปลูกผม FUE")
+with st.form("final_boss_form"):
+    st.header("Phase 1: Strategic Input (ข้อมูลเชิงกลยุทธ์จากคุณ)")
     
-    st.header("2. กำหนดคุณสมบัติ E-E-A-T")
-    author_persona = st.text_input("สวมบทบาทเป็นใคร (Author Persona)", placeholder="เช่น ผู้เชี่ยวชาญด้านการแพทย์")
-    target_audience = st.text_input("เขียนให้ใครอ่าน (Target Audience)", placeholder="เช่น คนที่หาข้อมูลเกี่ยวกับ ปลูกผม")
+    col1, col2 = st.columns(2)
+    with col1:
+        topic_input = st.text_input("หัวข้อบทความ (Topic)", placeholder="เปรียบเทียบคาร์ซีท All-in-One")
+        keyphrase_input = st.text_input("คีย์เวิร์ดหลักตรงตัว (Exact Focus Keyphrase)", placeholder="คาร์ซีทเด็กแรกเกิด")
+        word_count_input = st.number_input("ความยาวที่ต้องการ (คำ)", min_value=300, value=1000, step=100)
 
-    st.header("3. กำหนดความยาว")
-    word_count_input = st.number_input("ความยาวที่ต้องการ (คำ)", min_value=300, value=800, step=100)
+    with col2:
+        author_persona = st.text_input("สวมบทบาทเป็นใคร (Author Persona)", placeholder="ผู้เชี่ยวชาญด้านผลิตภัณฑ์สำหรับเด็ก")
+        target_audience = st.text_input("เขียนให้ใครอ่าน (Target Audience)", placeholder="คุณพ่อคุณแม่มือใหม่")
+        internal_link_ideas = st.text_area("ไอเดียสำหรับลิงก์ภายใน (Internal Links)", placeholder="เช่น: บทความเรื่อง 'วิธีเลือกคาร์ซีทให้ปลอดภัย', 'รีวิวคาร์ซีท 5 รุ่นยอดนิยม'")
 
-    submitted = st.form_submit_button("🏆 สร้าง SEO Checklist ทั้งหมด!")
+    submitted = st.form_submit_button("👑 สร้าง Publishing Kit!")
 
 # ==============================================================================
-# --- ส่วนประมวลผลและแสดงผลลัพธ์ ---
+# --- ส่วนประมวลผล ---
 # ==============================================================================
 if submitted:
-    if not GEMINI_API_KEY or not topic_input or not keyphrase_input or not author_persona:
+    if not all([GEMINI_API_KEY, topic_input, keyphrase_input, author_persona]):
         st.warning("⚠️ กรุณากรอกข้อมูลในช่อง 'หัวข้อ', 'คีย์เวิร์ด' และ 'สวมบทบาทเป็นใคร' ให้ครบถ้วน")
     else:
-        with st.spinner(f"AI ในบทบาท '{author_persona}' กำลังสร้างผลงาน Final..."):
+        with st.spinner(f"AI Co-Editor กำลังร่าง Publishing Kit..."):
             try:
                 model = genai.GenerativeModel('gemini-1.5-flash')
                 
-                # --- Final Mega Prompt ---
-                final_mega_prompt = f"""
-                คุณคือ SEO Content Strategist และนักเขียนบทความมืออาชีพระดับสูงสุด ภารกิจของคุณคือสร้าง SEO Elements ทั้งหมดสำหรับหน้าเว็บ 1 หน้า ให้สอดคล้องกับกฎ SEO และ E-E-A-T ทุกข้ออย่างสมบูรณ์แบบ
+                final_boss_prompt = f"""
+                Act as a world-class SEO Content Strategist and Editor. Your task is to generate a complete "Publishing Kit" for a single web page based on the provided strategic inputs. You must strictly adhere to all Yoast SEO Premium rules and E-E-A-T principles.
 
-                **ข้อมูลหลัก:**
-                - Topic: {topic_input}
-                - Focus Keyphrase: "{keyphrase_input}"
-                - Author Persona: "{author_persona}"
-                - Target Audience: "{target_audience}"
-                - Target Length: ประมาณ {word_count_input} คำ
+                **STRATEGIC INPUTS:**
+                - **Topic:** {topic_input}
+                - **Exact Focus Keyphrase:** "{keyphrase_input}"
+                - **Author Persona:** "{author_persona}"
+                - **Target Audience:** "{target_audience}"
+                - **Target Word Count:** Approximately {word_count_input} words.
+                - **Internal Link Context:** The website has existing articles about: "{internal_link_ideas}".
 
-                **กฎการสร้าง SEO Elements (ต้องทำทุกข้อ):**
+                **TASK: Generate the following elements in the specified XML-like format.**
 
-                1.  **URL Slug:** สร้าง URL Slug ที่เป็นมิตรกับ SEO โดยใช้ "{keyphrase_input}" (ใช้ภาษาอังกฤษ ตัวพิมพ์เล็ก คั่นด้วยขีด)
-                2.  **Image Filename:** สร้างชื่อไฟล์รูปภาพหลักสำหรับบทความนี้ ควรเกี่ยวข้องกับ "{topic_input}" และ "{keyphrase_input}" (ใช้ภาษาอังกฤษ ตัวพิมพ์เล็ก คั่นด้วยขีด) พร้อมนามสกุล .jpg
-                3.  **Meta Title:** ต้องมี "{keyphrase_input}" อยู่ตอนต้น, ยาวไม่เกิน 60 ตัวอักษร
-                4.  **Meta Keywords:** สร้างรายการ Meta Keywords ที่เกี่ยวข้องกับ "{topic_input}" ประมาณ 5-7 คำ คั่นด้วยจุลภาค (,)
-                5.  **Meta Description:** ต้องมี "{keyphrase_input}", ยาว 120-155 ตัวอักษร
-                6.  **Article Body & Other SEOs:** เขียนบทความตามหลัก E-E-A-T พร้อมทั้งแนะนำ Image Alt Text และตำแหน่งการวาง Links (Internal/Outbound)
+                <publishing_kit>
 
-                **รูปแบบผลลัพธ์ที่ต้องการ (Output Format):**
-                [SLUG_START]
-                (URL Slug)
-                [SLUG_END]
-                [IMAGE_FILENAME_START]
-                (Image Filename)
-                [IMAGE_FILENAME_END]
-                [META_TITLE_START]
-                (Meta Title)
-                [META_TITLE_END]
-                [META_KEYWORDS_START]
-                (Meta Keywords)
-                [META_KEYWORDS_END]
-                [META_DESC_START]
-                (Meta Description)
-                [META_DESC_END]
-                [ARTICLE_BODY_START]
-                (เนื้อหาบทความทั้งหมด พร้อมคำแนะนำ Image Alt Text และ Links)
-                [ARTICLE_BODY_END]
+                <metadata>
+                    <seo_title>Generate an SEO Title. It MUST start with the exact keyphrase "{keyphrase_input}". Total length must be 55-60 characters.</seo_title>
+                    <meta_description>Generate a Meta Description. It MUST contain the exact keyphrase "{keyphrase_input}". Total length MUST be between 140 and 156 characters.</meta_description>
+                    <url_slug>Generate a URL-friendly slug containing the keyphrase "{keyphrase_input}". Use lowercase English words separated by hyphens.</url_slug>
+                </metadata>
+
+                <content_body>
+                    <article>
+                    Write a comprehensive article based on the strategic inputs.
+                    **Strict Rules:**
+                    1.  **Length:** Must be at least {max(300, word_count_input)} words.
+                    2.  **E-E-A-T:** Write from the perspective of the "{author_persona}" for the "{target_audience}", demonstrating clear Experience, Expertise, Authoritativeness, and Trust.
+                    3.  **Keyphrase in Introduction:** The exact keyphrase "{keyphrase_input}" MUST appear naturally within the first paragraph.
+                    4.  **Keyphrase Density/Distribution:** The exact keyphrase "{keyphrase_input}" MUST appear 3-6 times, distributed evenly across the introduction, body, and conclusion.
+                    5.  **Keyphrase in Subheadings:** The exact keyphrase "{keyphrase_input}" or a very close synonym MUST appear in at least two H2 or H3 subheadings.
+                    6.  **Internal Links:** Naturally integrate 1-2 internal links to the topics mentioned in the Internal Link Context. Use the format `[[anchor text|INTERNAL SUGGESTION: Link to the article about...]]`.
+                    7.  **Outbound Links:** Naturally integrate 1-2 outbound links to high-authority, non-commercial sources (like Wikipedia, research institutions, or government sites). Use the format `[[anchor text|OUTBOUND SUGGESTION: Link to a reputable source about...]]`.
+                    </article>
+                </content_body>
+
+                <asset_checklist>
+                    <image_suggestions>
+                        <image>
+                            <description>Suggest a relevant, high-quality image for the article.</description>
+                            <alt_text>Write a descriptive alt text for this image that includes the exact keyphrase "{keyphrase_input}".</alt_text>
+                        </image>
+                        <image>
+                            <description>Suggest a second, different type of image (e.g., an infographic, a comparison table).</description>
+                            <alt_text>Write a descriptive alt text for this second image that includes a synonym or variation of the keyphrase "{keyphrase_input}".</alt_text>
+                        </image>
+                    </image_suggestions>
+                </asset_checklist>
+
+                </publishing_kit>
                 """
 
-                response = model.generate_content(final_mega_prompt)
+                response = model.generate_content(final_boss_prompt)
                 full_text = response.text
                 
-                # แยกส่วนผลลัพธ์
-                slug = full_text.split('[SLUG_START]')[1].split('[SLUG_END]')[0].strip()
-                image_filename = full_text.split('[IMAGE_FILENAME_START]')[1].split('[IMAGE_FILENAME_END]')[0].strip()
-                title = full_text.split('[META_TITLE_START]')[1].split('[META_TITLE_END]')[0].strip()
-                keywords = full_text.split('[META_KEYWORDS_START]')[1].split('[META_KEYWORDS_END]')[0].strip()
-                description = full_text.split('[META_DESC_START]')[1].split('[META_DESC_END]')[0].strip()
-                article = full_text.split('[ARTICLE_BODY_START]')[1].split('[ARTICLE_BODY_END]')[0].strip()
+                # ใช้ Regular Expression เพื่อดึงข้อมูลจากแท็ก XML
+                def extract_tag(tag, text):
+                    match = re.search(f'<{tag}>(.*?)</{tag}>', text, re.DOTALL)
+                    return match.group(1).strip() if match else f"[{tag} not found]"
 
-                st.success("🎉 สร้าง Final SEO Checklist สำเร็จ!")
+                title = extract_tag('seo_title', full_text)
+                description = extract_tag('meta_description', full_text)
+                slug = extract_tag('url_slug', full_text)
+                article = extract_tag('article', full_text)
+                images = extract_tag('image_suggestions', full_text)
+
+
+                st.success("🎉 Publishing Kit พร้อมใช้งานแล้ว!")
                 
                 # แสดงผลลัพธ์
-                st.subheader("✅ SEO Checklist (สำหรับนำไปใช้ใน CMS ของคุณ)")
+                st.subheader("Phase 2: AI Generated Publishing Kit")
+                st.markdown("นำข้อมูลชุดนี้ไปใช้ใน WordPress หรือ CMS ของคุณ")
                 
-                st.text_input("1. URL Slug", value=slug)
-                st.text_input("2. ชื่อภาพ (Image Filename)", value=image_filename)
-                st.text_input("3. Title", value=title)
-                st.text_input("4. Meta Keywords", value=keywords)
-                st.text_area("5. Meta Description", value=description, height=150)
+                with st.container(border=True):
+                    st.markdown("#### **Metadata**")
+                    st.text_input("SEO Title", value=title)
+                    st.text_area("Meta Description", value=description, height=100)
+                    st.text_input("URL Slug", value=slug)
 
-                st.subheader("✍️ Article Body")
-                st.markdown(article)
-                st.info("💡 **หมายเหตุ:** อย่าลืมมองหาคำแนะนำสำหรับใส่ Links และ Alt Text ในบทความ")
+                with st.container(border=True):
+                    st.markdown("#### **Content Body**")
+                    st.markdown(article)
+                    st.info("💡 **คำแนะนำ:** มองหาข้อความในวงเล็บ `[[...]]` เพื่อใส่ลิงก์ Internal/Outbound")
+
+                with st.container(border=True):
+                    st.markdown("#### **Asset Checklist (สำหรับรูปภาพ)**")
+                    st.text_area("Image & Alt Text Suggestions", value=images, height=200)
 
             except Exception as e:
                 st.error(f"เกิดข้อผิดพลาด: {e}")
+                st.text(full_text) # แสดงผลลัพธ์ดิบเพื่อดีบัก

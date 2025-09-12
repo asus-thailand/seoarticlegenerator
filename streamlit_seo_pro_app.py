@@ -30,7 +30,7 @@ with st.form("final_boss_form"):
     
     col1, col2 = st.columns(2)
     with col1:
-        topic_input = st.text_input("หัวข้อบทความ (Topic)", placeholder="เปรียบเทียบปลูกผมที่ไหนดี"")
+        topic_input = st.text_input("หัวข้อบทความ (Topic)", placeholder="เปรียบเทียบปลูกผมที่ไหนดี")
         keyphrase_input = st.text_input("คีย์เวิร์ดหลักตรงตัว (Exact Focus Keyphrase)", placeholder="ปลูกผมที่ไหนดี")
         word_count_input = st.number_input("ความยาวที่ต้องการ (คำ)", min_value=300, value=1000, step=100)
 
@@ -146,3 +146,4 @@ if submitted:
                 st.text("Raw output from AI (for debugging):")
 
                 st.text(full_text) # แสดงผลลัพธ์ดิบเพื่อดีบัก
+

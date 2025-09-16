@@ -11,7 +11,7 @@ st.set_page_config(page_title="Final Boss SEO Writer", page_icon="👑", layout=
 
 # จัดการ API Key
 try:
-    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+    GEMINI_API_KEY = "AIzaSyAGWVhrww353aEVVnijv7IESp1GGPcsuCU"
     genai.configure(api_key=GEMINI_API_KEY)
 except (KeyError, FileNotFoundError):
     st.warning("⚠️ ไม่พบ API Key ใน Secrets")
@@ -146,4 +146,5 @@ if submitted:
                 st.text("Raw output from AI (for debugging):")
 
                 st.text(full_text) # แสดงผลลัพธ์ดิบเพื่อดีบัก
+
 
